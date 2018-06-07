@@ -114,12 +114,22 @@ class Geocoder
 
     protected function formatResponse($response): array
     {
+        $components = $response->results[0]->address_components;
+        foreach( $components as $key => $value ) {
+            if (in_array('country', $value->types)) {
+                $country = $value->short_name;
+                $countryname = $value->long_name;
+            }
+        }
+
         return [
             'lat' => $response->results[0]->geometry->location->lat,
             'lng' => $response->results[0]->geometry->location->lng,
             'accuracy' => $response->results[0]->geometry->location_type,
             'formatted_address' => $response->results[0]->formatted_address,
             'viewport' => $response->results[0]->geometry->viewport,
+            'country' => $country,
+            'country_name' => $countryname
         ];
     }
 
@@ -146,3 +156,4 @@ class Geocoder
         ];
     }
 }
+
